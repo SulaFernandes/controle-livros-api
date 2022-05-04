@@ -58,7 +58,7 @@ public class CategoriaResource {
 		return categoria.isPresent() ? ResponseEntity.ok(categoria) : ResponseEntity.notFound().build();
 		
 	}
-	//ver
+	
 	@DeleteMapping("/{codigo}")
 	public void deletarCategoria(@PathVariable Long codigo) {
 		categoriaRepository.deleteById(codigo);
@@ -69,7 +69,5 @@ public class CategoriaResource {
 		Categoria categoriaSalva = categoriaService.alterar(codigo, categoria);
 		return ResponseEntity.ok(categoriaSalva);
 	}
-	
-	//criar metodos deletar e atualizar
 
 }
