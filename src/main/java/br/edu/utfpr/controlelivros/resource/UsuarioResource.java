@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -13,13 +14,16 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.edu.utfpr.controlelivros.event.RecursoCriadoEvent;
 import br.edu.utfpr.controlelivros.model.Usuario;
 import br.edu.utfpr.controlelivros.repository.UsuarioRepository;
+import br.edu.utfpr.controlelivros.service.UsuarioService;
 
 @RestController
 @RequestMapping("/usuarios")
@@ -31,6 +35,9 @@ public class UsuarioResource {
 	@Autowired
 	private ApplicationEventPublisher publisher;
 	
+	@Autowired
+	private UsuarioService usuarioService;
+	
 	@GetMapping
 	public List<Usuario> listar() {
 		
@@ -38,7 +45,7 @@ public class UsuarioResource {
 	}
 	
 	@PostMapping
-	public ResponseEntity<Usuario> novoUsuario(@RequestBody Usuario novoUsuario, HttpServletResponse response) {
+	public ResponseEntity<Usuario> novoUsuario(@Valid @RequestBody Usuario novoUsuario, HttpServletResponse response) {
 		Usuario usuario = usuarioRepository.save(novoUsuario);
 		
 		publisher.publishEvent(new RecursoCriadoEvent(this, response, usuario.getId()));
@@ -56,8 +63,15 @@ public class UsuarioResource {
 	}
 	
 	@DeleteMapping("/{codigo}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deletarUsuario(@PathVariable Long codigo) {
 		usuarioRepository.deleteById(codigo);
+	}
+	
+	@PutMapping("/{codigo}")//algo errado nesse metodo
+	public ResponseEntity<Usuario> atualizar(@PathVariable Long codigo, @Valid @RequestBody Usuario usuario) {
+		Usuario usuarioSalvo = usuarioService.alterar(codigo, usuario);
+		return ResponseEntity.ok(usuarioSalvo);
 	}
 
 }

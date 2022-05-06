@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -22,11 +23,14 @@ public class SituacaoCompra {
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	@Size(min = 3, max = 20)
 	@Column(name = "loja_compra")
 	private String lojaCompra;
 	
 	@Column(name = "valor_livro")
 	private double valorLivro;
+	
+	@Size(min = 3, max = 20)
 	private String descricao;
 
 }

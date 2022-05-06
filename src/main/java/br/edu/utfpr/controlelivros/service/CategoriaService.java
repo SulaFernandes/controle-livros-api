@@ -20,9 +20,12 @@ public class CategoriaService {
 		
 		Categoria categoria = this.categoriaRepository.findById(codigo)
 				.orElseThrow(() -> new EmptyResultDataAccessException(1)); //lança excessao caso não encontre
-		BeanUtils.copyProperties(novaCategoria, categoria, "codigo"); //copia dados
+		BeanUtils.copyProperties(novaCategoria, categoria, "codigo"); 
+		
+		categoria.setId(codigo);
 		
 		return this.categoriaRepository.save(categoria);
 	}
+	
 
 }

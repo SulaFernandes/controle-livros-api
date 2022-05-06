@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import br.edu.utfpr.controlelivros.repository.CategoriaRepository;
 import br.edu.utfpr.controlelivros.service.CategoriaService;
@@ -60,14 +61,24 @@ public class CategoriaResource {
 	}
 	
 	@DeleteMapping("/{codigo}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deletarCategoria(@PathVariable Long codigo) {
+		
 		categoriaRepository.deleteById(codigo);
+		 
 	}
 	
-	@PutMapping("/{codigo}")//algo errado nesse metodo
-	public ResponseEntity<Categoria> atualizar(@PathVariable Long codigo, @RequestBody Categoria categoria) {
-		Categoria categoriaSalva = categoriaService.alterar(codigo, categoria);
-		return ResponseEntity.ok(categoriaSalva);
+	@PutMapping("/{codigo}")
+	public ResponseEntity<Categoria> atualizar(@PathVariable Long codigo, @Valid @RequestBody Categoria categoria) {
+		try {
+			
+			Categoria categoriaSalva = categoriaService.alterar(codigo, categoria);
+			return ResponseEntity.ok(categoriaSalva);
+		}
+		catch (Exception e) {
+			return ResponseEntity.notFound().build();
+		}
+		
 	}
 
 }

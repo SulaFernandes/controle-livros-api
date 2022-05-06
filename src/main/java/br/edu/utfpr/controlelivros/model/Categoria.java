@@ -23,9 +23,8 @@ public class Categoria {
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	//CRIAR METODO HANDLER: NOTNULL E SIZE
-	@NotNull//trata problema de nulo
-	@Size(min = 3, max = 30)//trata problema de tamanho
+	@NotNull
+	@Size(min = 3, max = 50)
 	private String descricao;
 
 }
