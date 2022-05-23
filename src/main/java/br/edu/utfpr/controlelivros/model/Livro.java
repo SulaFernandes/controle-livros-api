@@ -12,6 +12,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import lombok.EqualsAndHashCode;
@@ -29,13 +30,16 @@ public class Livro {
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "categoria_id")
 	private Categoria categoria;
 	
+	@NotNull
 	@Enumerated(EnumType.STRING)
 	private SituacaoLeitura stleitura;
 	
+	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "stcompra_id")
 	private SituacaoCompra situacaoCompra;	

@@ -55,7 +55,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 	}
 	
-	@ExceptionHandler({EmptyResultDataAccessException.class})
+	@ExceptionHandler({ EmptyResultDataAccessException.class })
 	public ResponseEntity<Object> handleEmptyResultDataAccessException(EmptyResultDataAccessException ex, 
 			WebRequest request) {
 		
@@ -68,7 +68,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 	}
 	
-	@ExceptionHandler({DataIntegrityViolationException.class})//nao esta funcionando
+	@ExceptionHandler({ DataIntegrityViolationException.class })
 	public ResponseEntity<Object> handleDataIntegrityViolationException(DataIntegrityViolationException ex, 
 			WebRequest request) {
 		

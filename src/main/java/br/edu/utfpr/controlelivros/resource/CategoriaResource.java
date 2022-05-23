@@ -63,22 +63,20 @@ public class CategoriaResource {
 	@DeleteMapping("/{codigo}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deletarCategoria(@PathVariable Long codigo) {
-		
 		categoriaRepository.deleteById(codigo);
 		 
 	}
 	
 	@PutMapping("/{codigo}")
 	public ResponseEntity<Categoria> atualizar(@PathVariable Long codigo, @Valid @RequestBody Categoria categoria) {
-		try {
-			
-			Categoria categoriaSalva = categoriaService.alterar(codigo, categoria);
-			return ResponseEntity.ok(categoriaSalva);
-		}
-		catch (Exception e) {
+		if (!categoriaRepository.existsById(codigo)) {
 			return ResponseEntity.notFound().build();
 		}
 		
+		categoria.setId(codigo);
+		categoria = categoriaService.alterar(categoria);
+		
+		return ResponseEntity.ok(categoria);
 	}
-
+	
 }

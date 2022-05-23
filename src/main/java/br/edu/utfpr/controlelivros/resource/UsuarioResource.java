@@ -68,10 +68,16 @@ public class UsuarioResource {
 		usuarioRepository.deleteById(codigo);
 	}
 	
-	@PutMapping("/{codigo}")//algo errado nesse metodo
+	@PutMapping("/{codigo}")
 	public ResponseEntity<Usuario> atualizar(@PathVariable Long codigo, @Valid @RequestBody Usuario usuario) {
-		Usuario usuarioSalvo = usuarioService.alterar(codigo, usuario);
-		return ResponseEntity.ok(usuarioSalvo);
+		if (!usuarioRepository.existsById(codigo)) {
+			return ResponseEntity.notFound().build();
+		}
+		
+		usuario.setId(codigo);
+		usuario = usuarioService.alterar(usuario);
+		
+		return ResponseEntity.ok(usuario);
 	}
 
 }
