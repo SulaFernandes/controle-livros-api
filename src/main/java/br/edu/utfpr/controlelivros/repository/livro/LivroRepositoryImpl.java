@@ -14,6 +14,7 @@ import javax.persistence.criteria.Root;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.util.StringUtils;
 
 import br.edu.utfpr.controlelivros.model.Livro;
 import br.edu.utfpr.controlelivros.repository.filter.LivroFilter;
@@ -26,29 +27,35 @@ public class LivroRepositoryImpl implements LivroRepositoryQuery {
 	@Override
 	public Page<Livro> filtrar(LivroFilter livroFilter, Pageable pageable) {
 		
-		CriteriaBuilder cb = manager.getCriteriaBuilder();
-		CriteriaQuery<Livro> cq = cb.createQuery(Livro.class);
+		CriteriaBuilder cBuilder = manager.getCriteriaBuilder();
+		CriteriaQuery<Livro> cQuery = cBuilder.createQuery(Livro.class);
 		
-		Root<Livro> root = cq.from(Livro.class);
+		Root<Livro> root = cQuery.from(Livro.class);
 		
-		Predicate[] predicates = criarRestricoes(livroFilter, cb, root);
-		cq.where(predicates);
+		Predicate[] predicates = criarRestricoes(livroFilter, cBuilder, root);
+		cQuery.where(predicates);
 		
-		//Predicate predicate = cb.like(root.get("titulo"), "%" +livroFilter.getTitulo()+ "%");
-		//cq.where(predicate);
+		TypedQuery<Livro> tQuery = manager.createQuery(cQuery);
 		
-		TypedQuery<Livro> query = manager.createQuery(cq);
+		adicionarRestricoesPaginacao(tQuery, pageable);
 		
-		adicionarRestricoesPaginacao(query, pageable);
-		
-		//return query.getResultList();
-		return new PageImpl<>(query.getResultList(), pageable, total(livroFilter));
+		//return tQuery.getResultList();
+		return new PageImpl<>(tQuery.getResultList(), pageable, total(livroFilter));
 	}
 
-	private Predicate[] criarRestricoes(LivroFilter livroFilter, CriteriaBuilder cb, Root<Livro> root) {
+	private Predicate[] criarRestricoes(LivroFilter livroFilter, CriteriaBuilder cBuilder, Root<Livro> root) {
 		List<Predicate> predicates = new ArrayList<>();
 		
-		predicates.add(cb.like(root.get("titulo"), "%" +livroFilter.getTitulo()+ "%"));
+				
+		if(StringUtils.hasText(livroFilter.getTitulo())) {
+			predicates.add(cBuilder.like(cBuilder.lower(root.get("titulo")), "%" +livroFilter.getTitulo().toLowerCase() + "%"));
+		}
+		if(StringUtils.hasText(livroFilter.getAutor())) {
+			predicates.add(cBuilder.like(cBuilder.lower(root.get("autor")), "%" +livroFilter.getAutor().toLowerCase() + "%"));
+		}
+		if(StringUtils.hasText(livroFilter.getStleitura())) {
+			predicates.add(cBuilder.like(cBuilder.lower(root.get("stleitura")), "%" +livroFilter.getStleitura().toLowerCase() + "%"));
+		}
 		
 		return predicates.toArray(new Predicate[predicates.size()]);
 	}
@@ -66,7 +73,7 @@ public class LivroRepositoryImpl implements LivroRepositoryQuery {
 		return manager.createQuery(cq).getSingleResult();
 	}
 
-	private void adicionarRestricoesPaginacao(TypedQuery<?> query, Pageable pageable) {
+	private void adicionarRestricoesPaginacao(TypedQuery<Livro> query, Pageable pageable) {
 		
 		int paginaAtual = pageable.getPageNumber();
 		int totRegistrosPorPags = pageable.getPageSize();

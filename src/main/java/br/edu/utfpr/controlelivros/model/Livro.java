@@ -61,11 +61,11 @@ public class Livro {
 	@Size(min = 3, max = 50)
 	private String edicao;
 	
-	@NotBlank
+	@NotNull
 	@Column(name = "quant_paginas")
 	private int quantidadePaginas;
 	
-	@NotBlank
+	@NotNull
 	@Column(name = "quant_livros")
 	private int quantidadeLivros;
 	

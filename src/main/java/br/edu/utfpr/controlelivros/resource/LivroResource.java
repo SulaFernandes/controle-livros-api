@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,11 +40,13 @@ public class LivroResource {
 	private LivroService livroService;
 	
 	@GetMapping
-	public Page<Livro> listar(LivroFilter livroFilter, Pageable pageable) {
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_LIVRO') and #oauth2.hasScope('read')")
+	public Page<Livro> pesquisar(LivroFilter livroFilter, Pageable pageable) {
 		return livroRepository.filtrar(livroFilter, pageable);
 	}
 	
 	@PostMapping
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_LIVRO') and #oauth2.hasScope('write')")
 	public ResponseEntity<Livro> novoLivro(@Valid @RequestBody Livro novoLivro, HttpServletResponse response) {
 		Livro livro = livroRepository.save(novoLivro);
 		
@@ -54,6 +57,7 @@ public class LivroResource {
 	}
 	
 	@DeleteMapping("/{codigo}")
+	@PreAuthorize("hasAuthority('ROLE_REMOVER_LIVRO') and #oauth2.hasScope('write')")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void excluirLivro(@PathVariable Long codigo) {
 		livroRepository.deleteById(codigo);
@@ -61,6 +65,7 @@ public class LivroResource {
 	}
 	
 	@PutMapping("/{codigo}")
+	@PreAuthorize("hasAuthority('ROLE_ATUALIZAR_LIVRO') and #oauth2.hasScope('write')")
 	public ResponseEntity<Livro> atualizar(@PathVariable Long codigo, @Valid @RequestBody Livro livro) {
 		if (!livroRepository.existsById(codigo)) {
 			return ResponseEntity.notFound().build();

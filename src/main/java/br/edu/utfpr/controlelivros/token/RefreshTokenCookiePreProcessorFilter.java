@@ -31,7 +31,7 @@ public class RefreshTokenCookiePreProcessorFilter implements Filter {
 				&& "refresh_token".equals(hRequest.getParameter("grant_type")) && hRequest.getCookies() != null) {
 			
 			for(Cookie cookie : hRequest.getCookies()) {
-				if(cookie.getName().equals("refresh_token")) {
+				if(cookie.getName().equals("refreshToken")) {
 					String refreshToken = cookie.getValue();
 					hRequest = new MyServletRequestWrapper(hRequest, refreshToken);
 				}

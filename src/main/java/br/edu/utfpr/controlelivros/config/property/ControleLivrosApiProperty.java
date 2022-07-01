@@ -11,7 +11,7 @@ public class ControleLivrosApiProperty {
 		return seguranca;
 	}
 	
-	public static class Seguranca{
+	public static class Seguranca {
 		
 		private boolean enableHttps;
 		
